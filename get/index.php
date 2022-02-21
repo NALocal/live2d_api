@@ -1,4 +1,15 @@
 <?php
+/**
+ * path 变量是接口返回的图片地址，供修改过的前端live2d.min.js 加载。
+ * 必须在CDN目录前加上 +号（也可自己定义，但是在live2d.min.js 中也要匹配！）
+ *
+ * fox之后请将tokyohost 更改为你自己的git用户名。
+ *
+ * 可以测试以下访问如下链接是否有图片，如有则配置完成。（别忘了将链接中的tokyohost更改为你自己的用户名！!!）
+ * https://cdn.jsdelivr.net/gh/tokyohost/live2d_api/model/HyperdimensionNeptunia/blanc_classic/textures.1024/01.png
+ *
+ */
+$path = '+https://cdn.jsdelivr.net/gh/nalocal/live2d_api_cdn/model/';
 isset($_GET['id']) ? $id = $_GET['id'] : exit('error');
 
 require '../tools/modelList.php';
@@ -26,20 +37,30 @@ if (is_array($modelName)) {
     }
 }
 
-foreach ($json['textures'] as $k => $texture)
-	$json['textures'][$k] = '../model/' . $modelName . '/' . $texture;
+$textures = json_encode($json['textures']);
+$textures = str_replace('texture', $path.$modelName.'/texture', $textures);
+$textures = json_decode($textures, 1);
+$json['textures'] = $textures;
 
-$json['model'] = '../model/'.$modelName.'/'.$json['model'];
-if (isset($json['pose'])) $json['pose'] = '../model/'.$modelName.'/'.$json['pose'];
-if (isset($json['physics'])) $json['physics'] = '../model/'.$modelName.'/'.$json['physics'];
+$json['model'] = $path.$modelName.'/'.$json['model'];
+if (isset($json['pose'])) $json['pose'] = $path.$modelName.'/'.$json['pose'];
+if (isset($json['physics'])) $json['physics'] = $path.$modelName.'/'.$json['physics'];
 
-if (isset($json['motions']))
-    foreach ($json['motions'] as $k => $v) foreach($v as $k2 => $v2) foreach ($v2 as $k3 => $motion)
-        if ($k3 == 'file' || $k3 == 'sound') $json['motions'][$k][$k2][$k3] = '../model/' . $modelName . '/' . $motion;
+if (isset($json['motions'])) {
+    $motions = json_encode($json['motions']);
+    $motions = str_replace('sounds', '../model/'.$modelName.'/sounds', $motions);
+    $motions = str_replace('motions', $path.$modelName.'/motions', $motions);
+    $motions = json_decode($motions, 1);
+    $json['motions'] = $motions;
+}
 
-if (isset($json['expressions']))
-    foreach ($json['expressions'] as $k => $v) foreach($v as $k2 => $expression)
-        if ($k2 == 'file') $json['expressions'][$k][$k2] = '../model/' . $modelName . '/' . $expression;
+if (isset($json['expressions'])) {
+    $expressions = json_encode($json['expressions']);
+    $expressions = str_replace('expressions', $path.$modelName.'/expressions', $expressions);
+    $expressions = json_decode($expressions, 1);
+    $json['expressions'] = $expressions;
+}
+
 
 header("Content-type: application/json");
 echo $jsonCompatible->json_encode($json);
