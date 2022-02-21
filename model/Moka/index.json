@@ -223,7 +223,28 @@
 			{
                 "file":"action/wink01.mtn"
             }
+        ],
+		"idle":[ 
+            {"file":"action/smile04.mtn"}
+        ],
+        "flick_head":[ 
+            {"file":"action/surprised03.mtn"}
+        ],
+        "tap_body":[ 
+            {"file":"action/wink01.mtn"}
         ]
+    },
+	"layout":{ 
+        "center_x": 0,
+        "center_y": -0.16,
+        "width": 1.8,
+        "height": 2.5
+    },
+    "hit_areas_custom":{ 
+        "head_x":[-0.4, 0.9], 
+        "head_y":[0.4, 0.6],
+        "body_x":[-0.4, 0.5], 
+        "body_y":[0.4, -0.9]
     },
     "physics":"moca.physics",
 	"version":"Sample 1.0.0"
